@@ -120,7 +120,7 @@ class Copy(BaseStrategy):
                         )  # 模拟输入验证码
 
                         self._trader.app.top_window().set_focus()
-                        pywinauto.keyboard.SendKeys("{ENTER}")  # 模拟发送enter，点击确定
+                        pywinauto.keyboard.send_keys("{ENTER}")  # 模拟发送enter，点击确定
                         try:
                             logger.info(
                                 self._trader.app.top_window()
