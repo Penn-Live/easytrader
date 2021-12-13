@@ -5,9 +5,10 @@ from PIL import Image
 
 from easytrader import exceptions
 
+import pytesseract
+
 
 def captcha_recognize(img_path):
-    import pytesseract
 
     im = Image.open(img_path).convert("L")
     # 1. threshold the image
@@ -23,6 +24,22 @@ def captcha_recognize(img_path):
     # 2. recognize with tesseract
     num = pytesseract.image_to_string(out)
     return num
+
+from PIL import Image
+from PIL import ImageEnhance
+def captcha_r2(image_path):
+    img = Image.open(image_path)
+    img = img.convert('L')  # 这里也可以尝试使用L
+    enhancer = ImageEnhance.Color(img)
+    enhancer = enhancer.enhance(0)
+    enhancer = ImageEnhance.Brightness(enhancer)
+    enhancer = enhancer.enhance(2)
+    enhancer = ImageEnhance.Contrast(enhancer)
+    enhancer = enhancer.enhance(8)
+    enhancer = ImageEnhance.Sharpness(enhancer)
+    img = enhancer.enhance(20)
+    text = pytesseract.image_to_string(img)
+    return text
 
 
 def recognize_verify_code(image_path, broker="ht"):

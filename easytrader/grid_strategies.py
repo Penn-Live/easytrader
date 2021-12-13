@@ -12,6 +12,7 @@ import pywinauto.clipboard
 
 from easytrader.log import logger
 from easytrader.utils.captcha import captcha_recognize
+from easytrader.utils.captcha import captcha_r2
 from easytrader.utils.win_gui import SetForegroundWindow, ShowWindow, win32defines
 
 if TYPE_CHECKING:
@@ -97,7 +98,7 @@ class Copy(BaseStrategy):
     def _get_clipboard_data(self) -> str:
         if Copy._need_captcha_reg:
             if (
-                    self._trader.app.top_window().window(class_name="Static", title_re="验证码").exists(timeout=1)
+                    self._trader.app.top_window().window(class_name="Static", title_re="验证码").exists(timeout=3)
             ):
                 file_path = "tmp.png"
                 count = 5
@@ -113,11 +114,14 @@ class Copy(BaseStrategy):
                     captcha_num = "".join(captcha_num.split())
                     logger.info("captcha result-->" + captcha_num)
                     if len(captcha_num) == 4:
-                        self._trader.app.top_window().window(
+                        # self._trader.app.top_window().window(
+                        #     control_id=0x964, class_name="Edit"
+                        # ).set_text(
+                        #     captcha_num
+                        # )  # 模拟输入验证码
+                        self._trader.type_edit_control_keys(self._trader.app.top_window().window(
                             control_id=0x964, class_name="Edit"
-                        ).set_text(
-                            captcha_num
-                        )  # 模拟输入验证码
+                        ),captcha_num)
 
                         self._trader.app.top_window().set_focus()
                         pywinauto.keyboard.send_keys("{ENTER}")  # 模拟发送enter，点击确定
@@ -128,7 +132,7 @@ class Copy(BaseStrategy):
                                     .window_text()
                             )
                         except Exception as ex:  # 窗体消失
-                            logger.exception(ex)
+                           # logger.exception(ex)
                             found = True
                             break
                     count -= 1
