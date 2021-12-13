@@ -98,7 +98,7 @@ class Copy(BaseStrategy):
     def _get_clipboard_data(self) -> str:
         if Copy._need_captcha_reg:
             if (
-                    self._trader.app.top_window().window(class_name="Static", title_re="验证码").exists(timeout=3)
+                    self._trader.app.top_window().window(class_name="Static", title_re="验证码").exists(timeout=2)
             ):
                 file_path = "tmp.png"
                 count = 5
